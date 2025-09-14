@@ -17,13 +17,12 @@ MLX_DIR = minilibx
 # source files
 
 # List all your .c source files here by NAME ONLY.
-SRCS = main.c \
-       close_window.c \
-       key_handle.c \
+SRCS = main.c init_data.c \
+       close_window.c key_handle.c \
        get_map_dimensions.c \
        open_file.c \
-       draw_line.c \
-       get_next_line_bonus.c
+       draw_line.c pixel.c render_grid.c \
+       get_next_line.c
 
 # Automatically generate the object file paths.
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
@@ -42,8 +41,9 @@ MLX_FLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 # compiler and flags
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror
 INCLUDE_FLAGS = -I./includes -I./get-next-line -I./libft -I./minilibx
+CFLAGS += -g
 CFLAGS += $(INCLUDE_FLAGS)
 
 RM = rm -f

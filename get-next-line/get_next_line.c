@@ -1,7 +1,7 @@
+#include "get_next_line.h"
 #include "libft.h"
-#include"get_next_line_bonus.h"
 
-char	*ft_strjoin(const char *stash, const char *buffer)
+static char	*gnl_ft_strjoin(char *stash, const char *buffer)
 {
 	char	*new_str;
 	size_t	i;
@@ -26,11 +26,9 @@ char	*ft_strjoin(const char *stash, const char *buffer)
 	while (j < ft_strlen(buffer))
 		new_str[i++] = buffer[j++];
 	new_str[i] = '\0';
-	free((void *)stash);
 	return (new_str);
 }
-
-char	*extract_line(char *stash)
+static char	*extract_line(char *stash)
 {
 	char	*newline;
 	size_t	i;
@@ -46,7 +44,7 @@ char	*extract_line(char *stash)
 	return (ft_substr(stash, 0, i));
 }
 
-char	*update_stash(char *stash)
+static char	*update_stash(char *stash)
 {
 	char	*new_stash;
 	char	*new_line;
@@ -63,31 +61,50 @@ char	*update_stash(char *stash)
 	free(stash);
 	return (new_stash);
 }
-
-char	*get_next_line(int fd)
+static char	*read_line(int fd, char *stash)
 {
-	static char	*stash[4096];
-	char		*buffer;
-	ssize_t		read_byte;
-	char		*line;
+	char	*buffer;
+	ssize_t	read_byte;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
 	buffer = ft_calloc(BUFFER_SIZE + 1, 1);
 	if (!buffer)
 		return (NULL);
-	while (!ft_strchr(stash[fd], '\n'))
+	while (!stash || !ft_strchr(stash, '\n'))
 	{
 		read_byte = read(fd, buffer, BUFFER_SIZE);
 		if (read_byte == -1)
-			return (free(buffer), NULL);
+		{
+			free(buffer);
+			free(stash);
+			stash = NULL;
+			return (NULL);
+		}
 		if (read_byte == 0)
 			break ;
 		buffer[read_byte] = '\0';
-		stash[fd] = ft_strjoin(stash[fd], buffer);
+		stash = gnl_ft_strjoin(stash, buffer);
 	}
 	free(buffer);
-	line = extract_line(stash[fd]);
-	stash[fd] = update_stash(stash[fd]);
+	return (stash);
+}
+char	*get_next_line(int fd)
+{
+	static char	*stash;
+	char		*line;
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
+	{
+		if (stash)
+		{
+			free(stash);
+			stash = NULL;
+		}
+		return (NULL);
+	}
+	stash = read_line(fd, stash);
+	if (!stash)
+		return (NULL);
+	line = extract_line(stash);
+	stash = update_stash(stash);
 	return (line);
 }

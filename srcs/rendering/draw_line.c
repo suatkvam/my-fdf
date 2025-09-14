@@ -30,8 +30,8 @@ void	draw_line(t_fdf_data *fdf, t_line *line)
 	line_state = line_error_calc(line->start, line->end);
 	while (1)
 	{
-		mlx_pixel_put(fdf->mlx, fdf->win, current_point.x, current_point.y,
-			0x00FFFFFF);
+		ft_mlx_pixel_put(&fdf->img, current_point.x, current_point.y,
+			0x00FFFFFF);// todo: color.h eklenecek unutma
 		if (current_point.x == line->end.x && current_point.y == line->end.y)
 			break ;
 		e2 = 2 * line_state.err;

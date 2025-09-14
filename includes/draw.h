@@ -1,7 +1,16 @@
 #ifndef DRAW_H
 # define DRAW_H
 
-# include "fdf.h"
+typedef struct s_image
+{
+	void				*img_ptr;
+	char				*addr;
+	int					bits_per_pixel;
+	int					line_length;
+	int					endian;
+	int					width;
+	int					height;
+}						t_image;
 
 typedef struct s_point_coordinate
 {
@@ -27,8 +36,8 @@ typedef struct s_line_state
 	int					sy;
 }						t_line_state;
 
+void					ft_mlx_pixel_put(t_image *img, int x, int y, int color);
 t_line_state			init_line_state(t_point_coordinate start,
 							t_point_coordinate end);
-void					draw_line(t_fdf_data *fdf, t_line *line);
 
 #endif
