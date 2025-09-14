@@ -1,17 +1,50 @@
 #include "fdf.h"
+#include "draw.h"
 
 
-void	render_grid(t_fdf_data *data)
+void render_grid(t_fdf_data *fdf, t_point_coordinate *coords, int width, int height)
 {
-	// TODO: while döngüleri ile data->map'i gez,
-	// her noktayı project() ile 2D'ye çevir ve
-	// draw_line() ile çiz.
+    int x, y;
+    t_line line;
 
-	// Şimdilik bir test çizgisi çizelim:
-	t_line test_line;
-	test_line.start.x = 100;
-	test_line.start.y = 100;
-	test_line.end.x = 500;
-	test_line.end.y = 500;
-	draw_line(data, &test_line);
+    // yatay çizgiler
+    y = 0;
+    while (y < height)
+    {
+        x = 0;
+        while (x < width - 1)
+        {
+            line.start.x = coords[y * width + x].x * fdf->zoom + fdf->offset_x;
+            line.start.y = coords[y * width + x].y * fdf->zoom + fdf->offset_y;
+
+            line.end.x = coords[y * width + (x + 1)].x * fdf->zoom + fdf->offset_x;
+            line.end.y = coords[y * width + (x + 1)].y * fdf->zoom + fdf->offset_y;
+
+            draw_line(fdf, &line);
+            x++;
+        }
+        y++;
+    }
+
+    // dikey çizgiler
+    x = 0;
+    while (x < width)
+    {
+        y = 0;
+        while (y < height - 1)
+        {
+            line.start.x = coords[y * width + x].x * fdf->zoom + fdf->offset_x;
+            line.start.y = coords[y * width + x].y * fdf->zoom + fdf->offset_y;
+
+            line.end.x = coords[(y + 1) * width + x].x * fdf->zoom + fdf->offset_x;
+            line.end.y = coords[(y + 1) * width + x].y * fdf->zoom + fdf->offset_y;
+
+            draw_line(fdf, &line);
+            y++;
+        }
+        x++;
+    }
+
+    // Çizilen image'i pencereye bastır
+    mlx_put_image_to_window(fdf->mlx, fdf->win, fdf->img.img_ptr, 0, 0);
 }
