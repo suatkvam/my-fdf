@@ -1,7 +1,7 @@
 #include "fdf.h"
-int	close_window(t_fdf_data *mlx)
+int close_window(t_fdf_data *fdf)
 {
-	mlx_destroy_window(mlx->mlx, mlx->win);
-	exit(0);
+	if (fdf->win)
+		mlx_destroy_window(fdf->mlx, fdf->win);
 	return (0);
 }
