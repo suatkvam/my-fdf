@@ -1,18 +1,11 @@
 #include "fdf.h"
+#include "get_next_line.h"
 #include "libft.h"
 #include "pars.h"
-#include "get_next_line.h"
+#include <ctype.h>  // isspace için
 
-static void	free_split_and_line(char **split_lines, char *line)
-{
-	int	i;
 
-	i = 0;
-	while (split_lines[i])
-		free(split_lines[i++]);
-	free(split_lines);
-	free(line);
-}
+
 static void	init_map_data(t_get_map_dimensions *data)
 {
 	data->expected_columns = -1;
@@ -21,33 +14,56 @@ static void	init_map_data(t_get_map_dimensions *data)
 	data->line = NULL;
 	data->split_lines = NULL;
 }
+
+static int	count_cells(const char *line)
+{
+	int	count = 0;
+	int	i = 0;
+	int	in_cell = 0;
+
+	while (line[i])
+	{
+		if (!isspace(line[i]) && !in_cell)
+		{
+			in_cell = 1;
+			count++;
+		}
+		else if (isspace(line[i]))
+			in_cell = 0;
+		i++;
+	}
+	return (count);
+}
+
 static int	process_line(t_get_map_dimensions *data)
 {
-	data->split_lines = ft_split(data->line, ' ');
-	data->current_columns = 0;
-	while (data->split_lines[data->current_columns])
-		data->current_columns++;
+	int	cells;
+
+	if (!data->line)
+		return (0);
+
+	cells = count_cells(data->line);
+	if (cells == 0)
+		return (-1); // boş satır hatası
+
 	if (data->expected_columns == -1)
-		data->expected_columns = data->current_columns;
-	else if (data->current_columns != data->expected_columns)
-	{
-		free_split_and_line(data->split_lines, data->line);
-		return (-1);
-	}
-	free_split_and_line(data->split_lines, data->line);
+		data->expected_columns = cells;
+	else if (cells != data->expected_columns)
+		return (free(data->line), -1);
+
+	free(data->line);
 	data->line_num++;
 	return (0);
 }
 
 int	get_map_dimensions(const char *file_name)
 {
-	t_get_map_dimensions data;
+	t_get_map_dimensions	data;
 
 	init_map_data(&data);
 	data.fd = open_file(file_name);
 	if (data.fd < 0)
 		return (perror("Error opening file"), -2);
-	// Virgül operatörü ile birleştirme
 
 	data.line = get_next_line(data.fd);
 	while (data.line)
@@ -56,6 +72,7 @@ int	get_map_dimensions(const char *file_name)
 			return (close(data.fd), -1);
 		data.line = get_next_line(data.fd);
 	}
+
 	close(data.fd);
 	if (data.expected_columns == -1)
 		data.expected_columns = 0;

@@ -18,23 +18,38 @@ const char	*ft_basename(const char *path)
 	return (last);
 }
 
-int	is_hidden_file_with_ext(const char *path, const char *extension)
+int	is_valid_map_file(const char *path)
 {
-	const char	*base;
-	size_t		i;
+	const char *base;
+	const char *extension = MAP_EXTENSION;
+	size_t base_len;
+	size_t ext_len;
 
-	size_t base_len, ext_len;
-	if (!path || !extension)
+	if (!path)
 		return (0);
+
 	base = ft_basename(path);
-	if (!base || base[0] != '.')
+	if (!base)
 		return (0);
+
 	base_len = ft_strlen(base);
 	ext_len = ft_strlen(extension);
-	if (base_len < ext_len)
+
+	// Kural 2: Dosya adı uzantıdan uzun olmalı mı?
+	if (base_len <= ext_len)
 		return (0);
-	i = 0;
-	while (i < ext_len && base[base_len - ext_len + i] == extension[i])
-		i++;
-	return (i == ext_len);
+
+	// Kural 1: Dosya '.fdf' ile bitiyor mu?
+	// Dosya adının son 'ext_len' karakterini uzantı ile karşılaştır.
+	base += base_len - ext_len;
+	while (*base && *extension && *base == *extension)
+	{
+		base++;
+		extension++;
+	}
+
+	if (*extension == '\0')
+		return (1); // Eşleşme tamam.
+
+	return (0); // Eşleşme yok.
 }
