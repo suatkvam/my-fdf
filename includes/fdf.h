@@ -22,6 +22,6 @@ typedef struct s_fdf_data
 	int		offset_x;
 	int		offset_y;
 }			t_fdf_data;
-int			close_window(t_fdf_data *mlx);
 int			handle_key_press(int keycode, t_fdf_data *mlx);
+int			close_window(t_fdf_data *mlx);
 #endif
