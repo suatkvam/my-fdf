@@ -22,7 +22,7 @@ SRCS = main.c init_data.c \
        get_map_dimensions.c \
        open_file.c \
        draw_line.c pixel.c render_grid.c \
-       get_next_line.c
+       get_next_line.c path_utils.c
 
 # Automatically generate the object file paths.
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
