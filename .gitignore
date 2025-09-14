@@ -4,3 +4,6 @@ obj/
 libft/libft.a
 minilibx/
 fdf
+.vscode/
+project_tree.txt
+setup_project.sh
