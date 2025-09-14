@@ -1,11 +1,12 @@
 #include "fdf.h"
 
-int	handle_key_press(int keycode, t_fdf_data *mlx)
+int	handle_key_press(int keycode, t_fdf_data *fdf)
 {
-	if (keycode == 65307)
+	if (keycode == 65307) // ESC tuşu (X11 keycode)
 	{
-		mlx_destroy_window(mlx->mlx, mlx->win);
-		exit(0);
+		if (fdf->win)
+			mlx_destroy_window(fdf->mlx, fdf->win);
+		exit(0); // programdan çık
 	}
 	return (0);
 }
