@@ -39,5 +39,7 @@ typedef struct s_line_state
 void					ft_mlx_pixel_put(t_image *img, int x, int y, int color);
 t_line_state			init_line_state(t_point_coordinate start,
 							t_point_coordinate end);
+void					projection(t_point_coordinate *point);
+
 
 #endif

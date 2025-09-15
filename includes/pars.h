@@ -22,24 +22,29 @@ typedef struct s_get_map_dimensions
 	char				*line;
 }						t_get_map_dimensions;
 
+typedef struct s_map_data
+{
+	int					width;
+	int					height;
+}						t_map_data;
+
 typedef struct s_get_coordinates
 {
-    int                 fd;
-    int                 width;
-    int                 height;
-    t_point_coordinate  *coordinates;
-    int                 row;
-    int                 index;
-    char                *line;
-} t_get_coordinates;
+	int					fd;
+	int					width;
+	int					height;
+	t_point_coordinate	*coordinates;
+	int					row;
+	int					index;
+	char				*line;
+}						t_get_coordinates;
 
 const char				*ft_basename(const char *path);
 int						is_hidden_file_with_ext(const char *path,
 							const char *extension);
 
 int						open_file(const char *file_name);
-int						get_map_dimensions(const char *file_name);
+t_map_data				get_map_dimensions(const char *file_name);
 
-t_point_coordinate		*get_coordinates(const char *file_name,
-							int *total_cells);
+t_point_coordinate		*get_coordinates(const char *file_name, t_map_data map);
 #endif

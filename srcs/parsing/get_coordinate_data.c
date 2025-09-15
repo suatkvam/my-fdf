@@ -6,53 +6,53 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static void	process_line(t_get_coordinates *data)
+static void	fiil_coordinates(int fd, t_point_coordinate *coordinates, int width)
 {
-	int		col;
-	char	**split_lines;
+	char	*line;
+	char	**split_line;
+	int		x;
+	int		y;
 
-	col = 0;
-	split_lines = ft_split(data->line, ' ');
-	free(data->line);
-	while (split_lines[col])
+	y = 0;
+	while ((line = get_next_line(fd)))
 	{
-		data->coordinates[data->index].x = col;
-		data->coordinates[data->index].y = data->row;
-		data->coordinates[data->index].z = ft_atoi(split_lines[col]);
-		// ya da ft_atoi_base
-		free(split_lines[col]);
-		col++;
-		data->index++;
+		split_line = ft_split(line, ' ');
+		free(line);
+		x = 0;
+		while (split_line[x] && *split_line[x] != '\n')
+		{
+			coordinates[y * width + x].x = x;
+			coordinates[y * width + x].y = y;
+			coordinates[y * width + x].z = ft_atoi(split_line[x]);
+			free(split_line[x]);
+			x++;
+		}
+		free(split_line);
+		y++;
 	}
-	free(split_lines);
 }
 
 // Ana fonksiyon
-t_point_coordinate	*get_coordinates(const char *file_name, int *total_cells)
+t_point_coordinate	*get_coordinates(const char *file_name, t_map_data map)
 {
-	t_get_coordinates	data;
+	t_point_coordinate	*coordinates;
+	int					fd;
+	int					total_size;
 
-	data.width = get_map_dimensions(file_name) / 2;
-	data.height = get_map_dimensions(file_name) / 2;
-	*total_cells = data.width * data.height;
-	data.coordinates = malloc(sizeof(t_point_coordinate) * (*total_cells));
-	if (!data.coordinates)
+	if (map.width <= 0 || map.height <= 0)
 		return (NULL);
-	data.fd = open_file(file_name);
-	if (data.fd < 0)
+	total_size = map.width * map.height;
+	coordinates = malloc(sizeof(t_point_coordinate) * (total_size));
+	if (!coordinates)
+		return (NULL);
+	fd = open_file(file_name);
+	if (fd < 0)
 	{
 		perror("open_file");
-		free(data.coordinates);
+		free(coordinates);
 		return (NULL);
 	}
-	data.row = 0;
-	data.index = 0;
-	data.line = get_next_line(data.fd);
-	while (data.line)
-	{
-		process_line(&data);
-		data.row++;
-		data.line = get_next_line(data.fd);
-	}
-	return (close(data.fd), data.coordinates);
+	fiil_coordinates(fd, coordinates, map.width);
+	close(fd);
+	return (coordinates);
 }

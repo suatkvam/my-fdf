@@ -39,6 +39,6 @@ int			close_window(t_fdf_data *mlx);
 int			is_valid_map_file(const char *path);
 
 void		draw_line(t_fdf_data *fdf, t_line *line);
-void		render_grid(t_fdf_data *fdf, t_point_coordinate *coords, int width,
-				int height);
+void		render_grid(t_fdf_data *fdf, t_point_coordinate *coords,
+				t_map_data map);
 #endif
