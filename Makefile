@@ -1,30 +1,20 @@
+# Name of the final executable
 NAME = fdf
 
-INCLUDE_FLAGS = -I./error -I./utils -I./event -I./libft -I./parser -I./render
+# Directories
 
+# Directory for compiled object files (.o)
+OBJ_DIR = obj
+
+# Paths to the external libraries
 LIBFT_DIR = libft
-LIBFT_LIB = $(LIBFT_DIR)/libft.a
-LIBFT_FLAGS = -L$(LIBFT_DIR) -lft
-
 MLX_DIR = minilibx
-MLX_URL = https://cdn.intra.42.fr/document/document/40303/minilibx-linux.tgz
-MLX_TGZ = minilibx.tgz
-MLX_EXTRACTED_DIR = minilibx-linux
-MLX_LIB = $(MLX_DIR)/libmlx.a
-MLX_FLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 
-# Allow skipping MiniLibX download/build for quick local tests:
-# usage: make NOMLX=1
-ifeq ($(NOMLX),1)
-MLX_REQUIRED :=
-MLX_FLAGS :=
-else
-MLX_REQUIRED := $(MLX_LIB)
-endif
+# source files
 
 ERROR_SRC=
 EVENT_SRC=
-PARSER_SRC=
+PARSER_SRC= 
 RENDER_SRC=
 UTILS_SRC=
 
@@ -35,34 +25,49 @@ SRCS = $(addprefix error/, $(ERROR_SRC)) \
 	 $(addprefix event/, $(EVENT_SRC)) \
 	 main.c
 
-OBJ_DIR = obj
-OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o)
+# Automatically generate the object file paths.
+OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
+
+# libraries
+
+LIBFT_LIB = $(LIBFT_DIR)/libft.a
+LIBFT_FLAGS = -L$(LIBFT_DIR) -lft
+
+MLX_URL = https://cdn.intra.42.fr/document/document/40303/minilibx-linux.tgz
+MLX_TGZ = minilibx.tgz
+MLX_EXTRACTED_DIR = minilibx-linux
+MLX_LIB = $(MLX_DIR)/libmlx.a
+MLX_FLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
+
+# compiler and flags
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra $(INCLUDE_FLAGS) -g
+CFLAGS = -Wall -Wextra -Werror
+INCLUDE_FLAGS = -I./includes -I./get-next-line -I./libft -I./minilibx -I./parser
+CFLAGS += -g
+CFLAGS += $(INCLUDE_FLAGS)
 
-RM = rm -rf
+RM = rm -f
 SILENT = @
 
-all: dirs $(NAME)
+# rules
 
-dirs:
-	@mkdir -p $(OBJ_DIR)
+all: $(NAME)
 
-$(NAME): $(OBJS) $(LIBFT_LIB) $(MLX_REQUIRED)
+$(NAME): $(OBJS) $(LIBFT_LIB) $(MLX_LIB)
 	@echo "Linking $(NAME)..."
 	@$(CC) $(OBJS) $(LIBFT_FLAGS) $(MLX_FLAGS) -o $(NAME)
 	@echo "\033[32mSuccessfully built $(NAME)!\033[0m"
 
-$(OBJ_DIR)/%.o: %.c $(LIBFT_LIB) $(MLX_REQUIRED)
+$(OBJ_DIR)/%.o: %.c $(LIBFT_LIB) $(MLX_LIB)
 	@mkdir -p $(@D)
 	@echo "Compiling $<..."
 	@$(CC) $(CFLAGS) -c $< -o $@
 
+
 $(LIBFT_LIB):
 	@echo "Building Libft..."
 	@make -s -C $(LIBFT_DIR)
-
 
 $(MLX_LIB):
 	@if [ ! -d "$(MLX_DIR)" ]; then \
@@ -81,7 +86,7 @@ $(MLX_LIB):
 clean:
 	@if [ -d "$(LIBFT_DIR)" ]; then make -s -C $(LIBFT_DIR) clean; fi
 	@if [ -d "$(MLX_DIR)" ]; then make -s -C $(MLX_DIR) clean; fi
-	@$(RM) $(OBJ_DIR)
+	@$(RM) -r $(OBJ_DIR)
 	@echo "Cleaned object files."
 
 fclean: clean
@@ -92,7 +97,7 @@ fclean: clean
 re: fclean all
 
 distclean: fclean
-	@$(RM) $(MLX_DIR)
+	@$(RM) -r $(MLX_DIR)
 	@echo "Removed MiniLibX directory."
 
-.PHONY: all dirs clean fclean re distclean
+.PHONY: all clean fclean re distclean
