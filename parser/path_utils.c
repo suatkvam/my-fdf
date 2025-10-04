@@ -1,5 +1,5 @@
 #include "parser.h"
-const char	*ft_basename(const char *path)
+static const char	*ft_basename(const char *path)
 {
 	const char	*p;
 	const char	*last;
@@ -17,7 +17,7 @@ const char	*ft_basename(const char *path)
 	return (last);
 }
 
-int	is_valid_map_file(const char *path)
+int	is_valid_file(const char *path)
 {
 	const char *base;
 	const char *extension = MAP_EXTENSION;
