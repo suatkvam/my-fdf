@@ -15,15 +15,16 @@ FT_PRINTF_DIR = ft_printf
 
 ERROR_SRC=
 EVENT_SRC=
-PARSER_SRC= open_file.c path_utils.c
+PARSER_SRC= open_file.c path_utils.c read_file.c count_cells.c check_map_validation.c
 RENDER_SRC=
-UTILS_SRC=
+UTILS_SRC= ft_free_split.c
 
 SRCS = $(addprefix error/, $(ERROR_SRC)) \
 	 $(addprefix utils/, $(UTILS_SRC)) \
 	 $(addprefix parser/, $(PARSER_SRC)) \
 	 $(addprefix render/, $(RENDER_SRC)) \
 	 $(addprefix event/, $(EVENT_SRC)) \
+	 get-next-line/get_next_line.c \
 	 main.c
 
 # Automatically generate the object file paths.
@@ -44,7 +45,7 @@ MLX_FLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-INCLUDE_FLAGS = -I./includes -I./get-next-line -I./libft -I./ft_printf -I./minilibx -I./parser
+INCLUDE_FLAGS = -I./includes -I./get-next-line -I./libft -I./ft_printf -I./minilibx -I./parser -I./utils
 CFLAGS += -g
 CFLAGS += $(INCLUDE_FLAGS)
 
@@ -53,7 +54,7 @@ SILENT = @
 
 # rules
 
-all: $(NAME)
+all: $(NAME) clean
 
 $(NAME): $(OBJS) $(LIBFT_LIB) $(FT_PRINTF_LIB) $(MLX_LIB)
 	@echo "Linking $(NAME)..."

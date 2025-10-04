@@ -15,5 +15,8 @@
 
 int	open_file(const char *file_name);
 int	is_valid_file(const char *path);
+char	**read_file(int fd);
+int	count_cells(const char *line);
+int	check_map_valid(char **lines);
 
 #endif
