@@ -43,7 +43,7 @@ MLX_FLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-INCLUDE_FLAGS = -I./includes -I./get-next-line -I./libft -I./minilibx -I./parser
+INCLUDE_FLAGS = -I./includes -I./get-next-line -I./libft -I./ft_printf -I./minilibx -I./parser
 CFLAGS += -g
 CFLAGS += $(INCLUDE_FLAGS)
 
