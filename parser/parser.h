@@ -5,6 +5,8 @@
 #include <errno.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <stdio.h>
+#include "libft.h"
 
 #ifndef MAP_EXTENSION
 #define MAP_EXTENSION ".fdf"

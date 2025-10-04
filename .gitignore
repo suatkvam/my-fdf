@@ -1,6 +1,8 @@
 # Prerequisites
 *.d
 
+#shell file
+*.sh
 # Object files
 *.o
 *.ko
@@ -50,6 +52,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
-
+minilibx-linux
 # debug information files
 *.dwo

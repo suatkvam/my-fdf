@@ -3,24 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putstr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akivam <akivam@student.42.fr>              +#+  +:+       +#+        */
+/*   By: akivam <akivam@student.42istanbul.com.t    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 09:18:10 by akivam            #+#    #+#             */
-/*   Updated: 2025/06/26 09:54:58 by akivam           ###   ########.fr       */
+/*   Updated: 2025/10/04 17:07:17 by akivam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "printf.h"
-
-static int	ft_strlen(const char *s)
-{
-	int	i;
-
-	i = 0;
-	while (s && s[i])
-		i++;
-	return (i);
-}
+#include "libft.h"
 
 void	ft_putstr(char *s, int *len)
 {

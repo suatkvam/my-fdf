@@ -9,12 +9,13 @@ OBJ_DIR = obj
 # Paths to the external libraries
 LIBFT_DIR = libft
 MLX_DIR = minilibx
+FT_PRINTF_DIR = ft_printf
 
 # source files
 
 ERROR_SRC=
 EVENT_SRC=
-PARSER_SRC= 
+PARSER_SRC= open_file.c path_utils.c
 RENDER_SRC=
 UTILS_SRC=
 
@@ -32,10 +33,10 @@ OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 
 LIBFT_LIB = $(LIBFT_DIR)/libft.a
 LIBFT_FLAGS = -L$(LIBFT_DIR) -lft
+FT_PRINTF_LIB = $(FT_PRINTF_DIR)/libftprintf.a
+FT_PRINTF_FLAGS = -L$(FT_PRINTF_DIR) -lftprintf
 
-MLX_URL = https://cdn.intra.42.fr/document/document/40303/minilibx-linux.tgz
-MLX_TGZ = minilibx.tgz
-MLX_EXTRACTED_DIR = minilibx-linux
+MLX_GIT_URL = https://github.com/42Paris/minilibx-linux.git
 MLX_LIB = $(MLX_DIR)/libmlx.a
 MLX_FLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 
@@ -54,12 +55,12 @@ SILENT = @
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(LIBFT_LIB) $(MLX_LIB)
+$(NAME): $(OBJS) $(LIBFT_LIB) $(FT_PRINTF_LIB) $(MLX_LIB)
 	@echo "Linking $(NAME)..."
-	@$(CC) $(OBJS) $(LIBFT_FLAGS) $(MLX_FLAGS) -o $(NAME)
+	@$(CC) $(OBJS) $(LIBFT_FLAGS) $(FT_PRINTF_FLAGS) $(MLX_FLAGS) -o $(NAME)
 	@echo "\033[32mSuccessfully built $(NAME)!\033[0m"
 
-$(OBJ_DIR)/%.o: %.c $(LIBFT_LIB) $(MLX_LIB)
+$(OBJ_DIR)/%.o: %.c $(LIBFT_LIB) $(FT_PRINTF_LIB) $(MLX_LIB)
 	@mkdir -p $(@D)
 	@echo "Compiling $<..."
 	@$(CC) $(CFLAGS) -c $< -o $@
@@ -69,27 +70,26 @@ $(LIBFT_LIB):
 	@echo "Building Libft..."
 	@make -s -C $(LIBFT_DIR)
 
+$(FT_PRINTF_LIB):
+	@echo "Building ft_printf..."
+	@make -s -C $(FT_PRINTF_DIR)
+
 $(MLX_LIB):
 	@if [ ! -d "$(MLX_DIR)" ]; then \
-		echo "MiniLibX not found. Downloading..."; \
-		# Try the default URL first, if it fails prompt the user for a new one \
-		MLX_DL_URL="$(MLX_URL)"; \
+		echo "MiniLibX not found. Cloning..."; \
+		MLX_CLONE_URL="$(MLX_GIT_URL)"; \
 		while true; do \
-			echo "Attempting to download from $$MLX_DL_URL"; \
-			if wget -q -O $(MLX_TGZ) "$$MLX_DL_URL"; then \
-				echo "Download succeeded."; \
+			echo "Attempting to clone from $$MLX_CLONE_URL"; \
+			if git clone --depth=1 "$$MLX_CLONE_URL" $(MLX_DIR); then \
+				echo "Clone succeeded."; \
 				break; \
 			fi; \
-			echo "Download failed from: $$MLX_DL_URL"; \
-			printf "Enter a new URL for MiniLibX (or press Enter to abort): "; \
+			echo "Clone failed from: $$MLX_CLONE_URL"; \
+			printf "Enter a new Git URL for MiniLibX (or press Enter to abort): "; \
 			read NEW_URL || { echo "No input detected. Aborting."; exit 1; }; \
 			if [ -z "$$NEW_URL" ]; then echo "Aborted by user."; exit 1; fi; \
-			MLX_DL_URL="$$NEW_URL"; \
+			MLX_CLONE_URL="$$NEW_URL"; \
 		done; \
-		# Extract and move; \
-		tar -xzf $(MLX_TGZ); \
-		mv $(MLX_EXTRACTED_DIR) $(MLX_DIR); \
-		rm -f $(MLX_TGZ); \
 		echo "MiniLibX setup complete."; \
 	fi
 	@echo "Building MiniLibX..."
@@ -99,12 +99,14 @@ $(MLX_LIB):
 
 clean:
 	@if [ -d "$(LIBFT_DIR)" ]; then make -s -C $(LIBFT_DIR) clean; fi
+	@if [ -d "$(FT_PRINTF_DIR)" ]; then make -s -C $(FT_PRINTF_DIR) clean; fi
 	@if [ -d "$(MLX_DIR)" ]; then make -s -C $(MLX_DIR) clean; fi
 	@$(RM) -r $(OBJ_DIR)
 	@echo "Cleaned object files."
 
 fclean: clean
 	@if [ -d "$(LIBFT_DIR)" ]; then make -s -C $(LIBFT_DIR) fclean; fi
+	@if [ -d "$(FT_PRINTF_DIR)" ]; then make -s -C $(FT_PRINTF_DIR) fclean; fi
 	@$(RM) $(NAME)
 	@echo "Removed binary: $(NAME)."
 
