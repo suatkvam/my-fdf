@@ -72,7 +72,21 @@ $(LIBFT_LIB):
 $(MLX_LIB):
 	@if [ ! -d "$(MLX_DIR)" ]; then \
 		echo "MiniLibX not found. Downloading..."; \
-		wget -q -O $(MLX_TGZ) $(MLX_URL); \
+		# Try the default URL first, if it fails prompt the user for a new one \
+		MLX_DL_URL="$(MLX_URL)"; \
+		while true; do \
+			echo "Attempting to download from $$MLX_DL_URL"; \
+			if wget -q -O $(MLX_TGZ) "$$MLX_DL_URL"; then \
+				echo "Download succeeded."; \
+				break; \
+			fi; \
+			echo "Download failed from: $$MLX_DL_URL"; \
+			printf "Enter a new URL for MiniLibX (or press Enter to abort): "; \
+			read NEW_URL || { echo "No input detected. Aborting."; exit 1; }; \
+			if [ -z "$$NEW_URL" ]; then echo "Aborted by user."; exit 1; fi; \
+			MLX_DL_URL="$$NEW_URL"; \
+		done; \
+		# Extract and move; \
 		tar -xzf $(MLX_TGZ); \
 		mv $(MLX_EXTRACTED_DIR) $(MLX_DIR); \
 		rm -f $(MLX_TGZ); \
