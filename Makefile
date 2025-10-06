@@ -15,9 +15,9 @@ FT_PRINTF_DIR = ft_printf
 
 ERROR_SRC=
 EVENT_SRC=
-PARSER_SRC= open_file.c path_utils.c read_file.c count_cells.c check_map_validation.c
+PARSER_SRC= open_file.c path_utils.c read_file.c count_cells.c check_map_validation.c map_parser.c parse_token.c free_map.c
 RENDER_SRC=
-UTILS_SRC= ft_free_split.c
+UTILS_SRC= ft_free_split.c atoi_base.c
 
 SRCS = $(addprefix error/, $(ERROR_SRC)) \
 	 $(addprefix utils/, $(UTILS_SRC)) \

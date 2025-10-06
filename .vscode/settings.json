@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "libft.h": "c",
-        "printf.h": "c"
+        "printf.h": "c",
+        "cleaR_İMAGE.C": "cpp"
     }
 }
