@@ -17,6 +17,11 @@ t_render	*init_render(t_map *map)
 	render->window_width = WINDOW_WIDTH;
 	render->window_height = WINDOW_HEIGHT;
 	render->map = map;
+	render->offset_x = 0.0;
+	render->offset_y = 0.0;
+	render->rotation_x = 0.0;
+	render->rotation_y = 0.0;
+	render->zoom_factor = 1.0;
 	render->window = mlx_new_window(render->mlx, render->window_width,
 			render->window_height, WINDOW_TITLE);
 	if (!render->window)

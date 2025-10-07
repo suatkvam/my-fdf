@@ -20,6 +20,11 @@ typedef struct s_render
 	int		window_width;
 	int		window_height;
 	t_map	*map;
+	float	offset_x;
+	float	offset_y;
+	float	rotation_x;
+	float	rotation_y;
+	float	zoom_factor;
 }			t_render;
 
 typedef struct s_point2d
@@ -48,6 +53,7 @@ void		draw_line_hybrid(t_render *render, t_point2d start, t_point2d end);
 void		put_pixel(t_render *render, int x, int y, int color);
 t_point2d	project_point(t_point point);
 t_point2d	project_point_scaled(t_point point, t_map *map);
+t_point2d	project_point_interactive(t_point point, t_render *render);
 float		calculate_scale(t_map *map);
 void		clear_image(t_render *render);
 

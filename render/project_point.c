@@ -1,5 +1,6 @@
 #include "render.h"
 #include "colors.h"
+#include <math.h>
 
 // Calculate scale based on map dimensions
 float calculate_scale(t_map *map)
@@ -80,6 +81,56 @@ t_point2d project_point_scaled(t_point point, t_map *map)
         projected.y = (point.x + point.y - point.z * z_factor) * scale * 0.5 + WINDOW_HEIGHT / 4; // Normal
     
     // Use point color or default white
+    if (point.color == -1)
+        projected.color = COLOR_WHITE;
+    else
+        projected.color = point.color;
+        
+    return (projected);
+}
+
+// Interactive projection with offset and rotation support
+t_point2d project_point_interactive(t_point point, t_render *render)
+{
+    t_point2d projected;
+    float scale, z_factor;
+    float rotated_x, rotated_y;
+    
+    scale = calculate_scale(render->map) * render->zoom_factor;
+    
+    // Apply rotation (simple Y-axis rotation for now)
+    rotated_x = point.x * cos(render->rotation_y) - point.y * sin(render->rotation_y);
+    rotated_y = point.x * sin(render->rotation_y) + point.y * cos(render->rotation_y);
+    
+    // Z scaling (same as before)
+    if (render->map->width <= 15 || render->map->height <= 15)
+        z_factor = 1.2;
+    else if (render->map->width <= 50 || render->map->height <= 50)
+    {
+        if (render->map->width >= 25 && render->map->height >= 25)
+            z_factor = 1.8;
+        else
+            z_factor = 0.8;
+    }
+    else if (render->map->width <= 200 || render->map->height <= 200)
+    {
+        float aspect_ratio = (float)render->map->width / (float)render->map->height;
+        if (aspect_ratio >= 0.8 && aspect_ratio <= 1.2)
+            z_factor = 0.4;
+        else
+            z_factor = 2.0;
+    }
+    else
+        z_factor = 0.2;
+    
+    // Isometric projection with offsets
+    projected.x = (rotated_x - rotated_y) * scale + WINDOW_WIDTH / 2 + render->offset_x;
+    
+    if (render->map->width == 20 && render->map->height == 20)
+        projected.y = (rotated_x + rotated_y - point.z * z_factor) * scale * 0.5 + WINDOW_HEIGHT / 6 + render->offset_y;
+    else
+        projected.y = (rotated_x + rotated_y - point.z * z_factor) * scale * 0.5 + WINDOW_HEIGHT / 4 + render->offset_y;
+    
     if (point.color == -1)
         projected.color = COLOR_WHITE;
     else
