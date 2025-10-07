@@ -9,21 +9,30 @@ float calculate_scale(t_map *map)
     if (!map)
         return (20.0);
         
-    max_dimension = (map->width > map->height) ? map->width : map->height;
-    
-    // Scale based on map size
-    if (max_dimension <= 10)
-        return (40.0);      // Very small maps
-    else if (max_dimension <= 20)
-        return (30.0);      // Small maps (like test files)
-    else if (max_dimension <= 50)
-        return (20.0);      // Medium maps
-    else if (max_dimension <= 100)
-        return (6.0);       // Large maps (like t2: 100x100)
-    else if (max_dimension <= 300)
-        return (4.0);       // Very large maps
+    if (map->width > map->height)
+        max_dimension = map->width;
     else
-        return (1.3);       // Huge maps (like julia.fdf 500x500)
+        max_dimension = map->height;
+    
+    // Scale based on map size groups
+    if (max_dimension <= 5)
+        return (100.0);     // GROUP 1: Micro maps (test_color: 3x2, test_small: 5x5)
+    else if (max_dimension <= 10)
+        return (50.0);      // GROUP 2: Tiny maps (10-2, cube, elem: 10x10)
+    else if (max_dimension <= 15)
+        return (35.0);      // GROUP 3: Very small maps (basictest: 11x9, plat: 10x13)
+    else if (max_dimension <= 25)
+        return (25.0);      // GROUP 4: Small maps (42: 19x11, 20-60: 20x20, grid: 21x8)
+    else if (max_dimension <= 35)
+        return (15.0);      // GROUP 5: Small-medium maps (pyra: 27x27, pyramide: 27x33)
+    else if (max_dimension <= 50)
+        return (12.0);      // GROUP 6: Medium maps (pylone: 48x47, 50-4: 50x50)
+    else if (max_dimension <= 100)
+        return (6.0);       // GROUP 7: Large maps (100-6: 100x100, t2: 100x100)
+    else if (max_dimension <= 200)
+        return (3.0);       // GROUP 8: Very large maps (mars: 200x116, t1: 200x200)
+    else
+        return (1.0);       // GROUP 9: Huge maps (julia: 500x500, elem-fract: 500x500)
 }
 
 // Simple isometric projection with adaptive scaling
@@ -35,9 +44,17 @@ t_point2d project_point_scaled(t_point point, t_map *map)
     scale = calculate_scale(map);
     
     // Z scaling based on map shape and size
-    if (map->width <= 50 || map->height <= 50)
+    if (map->width <= 15 || map->height <= 15)
     {
-        z_factor = 0.6;    // Small maps - more dramatic
+        z_factor = 1.2;    // Very small maps - very dramatic (10-2, basictest)
+    }
+    else if (map->width <= 50 || map->height <= 50)
+    {
+        // Special handling for pyramid maps
+        if (map->width >= 25 && map->height >= 25)
+            z_factor = 1.8;    // Pyramid maps - extra dramatic
+        else
+            z_factor = 0.8;    // Other small maps
     }
     else if (map->width <= 200 || map->height <= 200)
     {
@@ -55,7 +72,12 @@ t_point2d project_point_scaled(t_point point, t_map *map)
     
     // Isometric projection formula with adaptive Z scaling
     projected.x = (point.x - point.y) * scale + WINDOW_WIDTH / 2; // Center X
-    projected.y = (point.x + point.y - point.z * z_factor) * scale * 0.5 + WINDOW_HEIGHT / 4; // Adaptive Z factor
+    
+    // Special Y positioning for elem2 (20x20 square maps)
+    if (map->width == 20 && map->height == 20)
+        projected.y = (point.x + point.y - point.z * z_factor) * scale * 0.5 + WINDOW_HEIGHT / 2; // lower down
+    else
+        projected.y = (point.x + point.y - point.z * z_factor) * scale * 0.5 + WINDOW_HEIGHT / 4; // Normal
     
     // Use point color or default white
     if (point.color == -1)
