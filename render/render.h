@@ -62,6 +62,7 @@ int			start_render(t_render *render);
 
 // Event handlers
 int			handle_key_press(int keycode, t_render *render);
+int			handle_mouse_wheel(int button, int x, int y, t_render *render);
 int			close_window(t_render *render);
 
 #endif

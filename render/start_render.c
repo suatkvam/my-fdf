@@ -22,6 +22,7 @@ int start_render(t_render *render)
     // Set up event handlers
     mlx_key_hook(render->window, handle_key_press, render);
     mlx_hook(render->window, 17, 0, close_window, render); // X button
+    mlx_mouse_hook(render->window, handle_mouse_wheel, render); // Mouse wheel
     mlx_expose_hook(render->window, expose_handler, render); // Redraw on expose
     
     // Start MLX loop

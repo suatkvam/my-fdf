@@ -14,7 +14,7 @@ FT_PRINTF_DIR = ft_printf
 # source files
 
 ERROR_SRC= error.c
-EVENT_SRC= key_handle.c close_window.c
+EVENT_SRC= key_handle.c close_window.c mouse_handle.c
 PARSER_SRC= open_file.c path_utils.c read_file.c count_cells.c check_map_validation.c map_parser.c parse_token.c free_map.c
 RENDER_SRC= init_render.c destroy_render.c draw_line.c put_pixel.c clear_image.c render.c start_render.c project_point.c render_map.c
 UTILS_SRC= ft_free_split.c atoi_base.c
