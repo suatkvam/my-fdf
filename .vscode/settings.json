@@ -2,6 +2,7 @@
     "files.associations": {
         "libft.h": "c",
         "printf.h": "c",
-        "cleaR_İMAGE.C": "cpp"
+        "cleaR_İMAGE.C": "cpp",
+        "render.h": "c"
     }
 }

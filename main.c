@@ -2,6 +2,7 @@
 #include "parser.h"
 #include "printf.h"
 #include "utils.h"
+#include "render.h"
 #include <sys/time.h>
 #include <stdio.h>
 
@@ -20,6 +21,7 @@ static void	print_parse_time(long time_taken)
 int	parse_and_render_map(const char *map_file)
 {
 	t_map			*map;
+	t_render		*render;
 	struct timeval	start, end;
 	long			time_taken;
 
@@ -40,8 +42,23 @@ int	parse_and_render_map(const char *map_file)
 	print_parse_time(time_taken);
 	ft_printf("Example point [0][0]: z=%d, color=%d\n", map->grid[0][0].z,
 		map->grid[0][0].color);
-	// TODO: Call render function here
-	free_map(map);
+		
+	// Initialize render system
+	ft_printf("Initializing render system...\n");
+	render = init_render(map);
+	if (!render)
+	{
+		ft_printf("Error: Could not initialize render system\n");
+		free_map(map);
+		return (1);
+	}
+	ft_printf("Render system initialized successfully\n");
+	
+	// Start rendering
+	ft_printf("Starting render loop...\n");
+	start_render(render);
+	
+	// Cleanup is handled by event handlers when window closes
 	return (0);
 }
 

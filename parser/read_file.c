@@ -57,6 +57,10 @@ char	**read_file(int fd)
 		return (NULL);
 	}
 	lines = read_lines_loop(fd, lines, count);
+	
+	// Clear GNL's static stash by calling with invalid fd
+	get_next_line(-1);
+	
 	if (!lines)
 	{
 		printf("Dosya boş!\n");

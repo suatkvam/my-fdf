@@ -47,5 +47,15 @@ void		render_map(t_render *render);
 void		draw_line_hybrid(t_render *render, t_point2d start, t_point2d end);
 void		put_pixel(t_render *render, int x, int y, int color);
 t_point2d	project_point(t_point point);
+t_point2d	project_point_scaled(t_point point, t_map *map);
+float		calculate_scale(t_map *map);
+void		clear_image(t_render *render);
+
+// Main render functions
+int			start_render(t_render *render);
+
+// Event handlers
+int			handle_key_press(int keycode, t_render *render);
+int			close_window(t_render *render);
 
 #endif

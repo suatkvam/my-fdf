@@ -13,17 +13,19 @@ FT_PRINTF_DIR = ft_printf
 
 # source files
 
-ERROR_SRC=
-EVENT_SRC=
+ERROR_SRC= error.c
+EVENT_SRC= key_handle.c close_window.c
 PARSER_SRC= open_file.c path_utils.c read_file.c count_cells.c check_map_validation.c map_parser.c parse_token.c free_map.c
-RENDER_SRC=
+RENDER_SRC= init_render.c destroy_render.c draw_line.c put_pixel.c clear_image.c render.c start_render.c project_point.c render_map.c
 UTILS_SRC= ft_free_split.c atoi_base.c
+COLOR_SRC= color_blend.c
 
 SRCS = $(addprefix error/, $(ERROR_SRC)) \
 	 $(addprefix utils/, $(UTILS_SRC)) \
 	 $(addprefix parser/, $(PARSER_SRC)) \
 	 $(addprefix render/, $(RENDER_SRC)) \
-	 $(addprefix event/, $(EVENT_SRC)) \
+	 $(addprefix events/, $(EVENT_SRC)) \
+	 $(addprefix colors/, $(COLOR_SRC)) \
 	 get-next-line/get_next_line.c \
 	 main.c
 
@@ -45,7 +47,7 @@ MLX_FLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-INCLUDE_FLAGS = -I./includes -I./get-next-line -I./libft -I./ft_printf -I./minilibx -I./parser -I./utils
+INCLUDE_FLAGS = -I./includes -I./get-next-line -I./libft -I./ft_printf -I./minilibx -I./parser -I./utils -I./render -I./events -I./colors -I./error
 CFLAGS += -g
 CFLAGS += $(INCLUDE_FLAGS)
 
