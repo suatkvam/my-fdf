@@ -75,6 +75,6 @@ int	main(int argc, char const *argv[])
 			argv[1]);
 		return (1);
 	}
-
+	
 	return (parse_and_render_map(argv[1]));
 }

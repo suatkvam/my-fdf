@@ -20,8 +20,6 @@ void clear_image(t_render *render)
     }
 }
 
-//TODO BUNLAR PARÇALANIP AYARLANACAK
-
 
 
 

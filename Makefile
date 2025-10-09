@@ -19,6 +19,7 @@ PARSER_SRC= open_file.c path_utils.c read_file.c count_cells.c check_map_validat
 RENDER_SRC= init_render.c destroy_render.c draw_line.c put_pixel.c clear_image.c render.c start_render.c project_point.c render_map.c
 UTILS_SRC= ft_free_split.c atoi_base.c
 COLOR_SRC= color_blend.c
+MATH3D_SRC= vec_ops_1.c vec_ops2.c matrix_ops.c
 
 SRCS = $(addprefix error/, $(ERROR_SRC)) \
 	 $(addprefix utils/, $(UTILS_SRC)) \
@@ -26,6 +27,7 @@ SRCS = $(addprefix error/, $(ERROR_SRC)) \
 	 $(addprefix render/, $(RENDER_SRC)) \
 	 $(addprefix events/, $(EVENT_SRC)) \
 	 $(addprefix colors/, $(COLOR_SRC)) \
+	 $(addprefix math3d/, $(MATH3D_SRC)) \
 	 get-next-line/get_next_line.c \
 	 main.c
 
@@ -47,7 +49,7 @@ MLX_FLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-INCLUDE_FLAGS = -I./includes -I./get-next-line -I./libft -I./ft_printf -I./minilibx -I./parser -I./utils -I./render -I./events -I./colors -I./error
+INCLUDE_FLAGS = -I./includes -I./get-next-line -I./libft -I./ft_printf -I./minilibx -I./parser -I./utils -I./render -I./events -I./colors -I./error -I./math3d -I./format
 CFLAGS += -g
 CFLAGS += $(INCLUDE_FLAGS)
 
