@@ -21,19 +21,19 @@ void render_map(t_render *render)
         while (x < render->map->width)
         {
             current_point = render->map->grid[y][x];
-            current_2d = project_point_interactive(current_point, render);
+            current_2d = project_point_multi(current_point, render);
             
             // Draw line to right neighbor (if exists)
             if (x < render->map->width - 1)
             {
-                right_2d = project_point_interactive(render->map->grid[y][x + 1], render);
+                right_2d = project_point_multi(render->map->grid[y][x + 1], render);
                 draw_line_hybrid(render, current_2d, right_2d);
             }
             
             // Draw line to bottom neighbor (if exists)
             if (y < render->map->height - 1)
             {
-                down_2d = project_point_interactive(render->map->grid[y + 1][x], render);
+                down_2d = project_point_multi(render->map->grid[y + 1][x], render);
                 draw_line_hybrid(render, current_2d, down_2d);
             }
             

@@ -1,5 +1,6 @@
 #include "render.h"
 #include "colors.h"
+#include "math3d.h"
 #include <math.h>
 
 // Calculate scale based on map dimensions

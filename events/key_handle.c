@@ -22,6 +22,9 @@ int	handle_key_press(int keycode, t_render *render)
 		render->rotation_y -= 0.1;
 	else if (keycode == 101) // E - Rotate right
 		render->rotation_y += 0.1;
+	// P for projection cycle
+	else if (keycode == 112) // P - Cycle projection
+		cycle_projection(render);
 		
 	// Re-render after any change
 	if (keycode != 65307)
