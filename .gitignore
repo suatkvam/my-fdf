@@ -55,3 +55,9 @@ dkms.conf
 minilibx-linux
 # debug information files
 *.dwo
+
+# Local test harness and sample data
+/stl & obj files/
+test_main.c
+test_main
+test_main.*
