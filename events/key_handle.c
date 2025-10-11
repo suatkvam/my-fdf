@@ -22,7 +22,22 @@ int	handle_key_press(int keycode, t_render *render)
 		render->rotation_y -= 0.1;
 	else if (keycode == 101) // E - Rotate right
 		render->rotation_y += 0.1;
-	// P for projection cycle
+	// Number keys 1-6 map directly to projection types
+	// '1' -> Isometric, '2' -> Perspective, '3' -> Orthographic
+	// '4' -> Top-Down, '5' -> Front View, '6' -> Side View
+	else if (keycode == 49) // '1'
+		render->projection_type = PROJ_ISOMETRIC;
+	else if (keycode == 50) // '2'
+		render->projection_type = PROJ_PERSPECTIVE;
+	else if (keycode == 51) // '3'
+		render->projection_type = PROJ_ORTHOGRAPHIC;
+	else if (keycode == 52) // '4'
+		render->projection_type = PROJ_TOP_DOWN;
+	else if (keycode == 53) // '5'
+		render->projection_type = PROJ_FRONT_VIEW;
+	else if (keycode == 54) // '6'
+		render->projection_type = PROJ_SIDE_VIEW;
+	// P for projection cycle (keeps backwards compatibility)
 	else if (keycode == 112) // P - Cycle projection
 		cycle_projection(render);
 		
