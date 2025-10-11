@@ -15,11 +15,12 @@ FT_PRINTF_DIR = ft_printf
 
 ERROR_SRC= error.c
 EVENT_SRC= key_handle.c close_window.c mouse_handle.c
-PARSER_SRC= open_file.c path_utils.c read_file.c count_cells.c check_map_validation.c map_parser.c parse_token.c free_map.c
+PARSER_SRC= open_file.c path_utils.c read_file.c count_cells.c check_map_validation.c map_parser.c parse_token.c free_map.c create_empty_map.c
 RENDER_SRC= init_render.c destroy_render.c draw_line.c put_pixel.c clear_image.c render.c start_render.c project_point.c render_map.c multi_projection.c
 UTILS_SRC= ft_free_split.c atoi_base.c
 COLOR_SRC= color_blend.c
 MATH3D_SRC= vec_ops_1.c vec_ops2.c matrix_ops.c
+FORMAT_SRC= read_binary_file.c read_stl_file.c load_stl_ascii_file.c stl_wrapper.c free_mesh.c
 
 SRCS = $(addprefix error/, $(ERROR_SRC)) \
 	 $(addprefix utils/, $(UTILS_SRC)) \
@@ -28,6 +29,7 @@ SRCS = $(addprefix error/, $(ERROR_SRC)) \
 	 $(addprefix events/, $(EVENT_SRC)) \
 	 $(addprefix colors/, $(COLOR_SRC)) \
 	 $(addprefix math3d/, $(MATH3D_SRC)) \
+	 $(addprefix format/, $(FORMAT_SRC)) \
 	 get-next-line/get_next_line.c \
 	 main.c
 

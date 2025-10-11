@@ -34,6 +34,7 @@ int			count_cells(const char *line);
 int			check_map_valid(char **lines);
 t_point		parse_token(char *token, int x, int y);
 t_map		*map_parser(const char *file_name);
+t_map		*create_empty_map(int width, int height);
 void		free_map(t_map *map);
 
 #endif

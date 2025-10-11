@@ -1,6 +1,7 @@
 #include "format.h"
 #include <errno.h>
 #include <fcntl.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -22,22 +23,41 @@ t_mesh	*load_stl_file(const char *filename)
 
 	if (!filename)
 	{
+		printf("Error: filename is NULL\n");
 		errno = EINVAL;
 		return (NULL);
 	}
+	printf("Trying to open file: %s\n", filename);
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
-		return (NULL);
-	if (read_binary_chunk(fd, header, 80) != 80)
 	{
-		close(fd);
+		printf("Error: Cannot open file %s\n", filename);
 		return (NULL);
 	}
-	if (read_uint32_le(fd, &tri_count) != 0)
+	printf("Reading header to detect format...\n");
+	if (read_binary_chunk(fd, header, 80) != 80)
 	{
+		printf("Failed to read header, trying ASCII mode\n");
 		close(fd);
 		return (load_stl_ascii_file(filename));
 	}
+	
+	// Check if it starts with "solid" (ASCII format)
+	if (strncmp((char *)header, "solid", 5) == 0)
+	{
+		printf("Detected ASCII STL format\n");
+		close(fd);
+		return (load_stl_ascii_file(filename));
+	}
+	
+	printf("Detected binary STL format, reading triangle count...\n");
+	if (read_uint32_le(fd, &tri_count) != 0)
+	{
+		printf("Failed to read triangle count, trying ASCII mode\n");
+		close(fd);
+		return (load_stl_ascii_file(filename));
+	}
+	printf("Triangle count: %u\n", tri_count);
 	if (fstat(fd, &st) == 0)
 	{
 		expected = 84 + (off_t)tri_count * 50;

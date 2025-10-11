@@ -1,4 +1,5 @@
 #include "format.h"
+#include "../libft/libft.h"
 #include "../get-next-line/get_next_line.h"
 #include <errno.h>
 #include <fcntl.h>
@@ -12,9 +13,16 @@ static int	starts_with(const char *str, const char *prefix)
 
 static int	parse_vertex_line(const char *line, t_3D_vec *vertex)
 {
-	if (sscanf(line, "vertex %f %f %f", &vertex->x, &vertex->y,
-			&vertex->z) != 3)
+	int result;
+	
+	result = sscanf(line, "%*s %f %f %f", &vertex->x, &vertex->y, &vertex->z);
+	printf("parse_vertex_line: sscanf result=%d, line='%s'\n", result, line);
+	if (result != 3)
+	{
+		printf("parse_vertex_line: Failed to parse vertex (expected 3, got %d)\n", result);
 		return (-1);
+	}
+	printf("parse_vertex_line: Parsed vertex: (%f, %f, %f)\n", vertex->x, vertex->y, vertex->z);
 	return (0);
 }
 
@@ -125,23 +133,34 @@ static int	parse_facet(int fd, t_ascii_loader *loader)
 	int			vertex_idx;
 
 	vertex_idx = 0;
+	printf("parse_facet: Looking for 'outer loop'\n");
 	// "outer loop" satırını oku
 	line = get_next_line(fd);
-	if (!line || !contains(line, "outer loop"))
+	if (!line)
 	{
+		printf("parse_facet: get_next_line returned NULL for outer loop\n");
+		return (-1);
+	}
+	printf("parse_facet: Read line: '%s'\n", line);
+	if (!contains(line, "outer loop"))
+	{
+		printf("parse_facet: Line doesn't contain 'outer loop'\n");
 		free(line);
 		return (-1);
 	}
+	printf("parse_facet: Found outer loop\n");
 	free(line);
 	// 3 vertex oku
 	while (vertex_idx < 3)
 	{
 		line = get_next_line(fd);
-		if (!line || !starts_with(line, "vertex"))
+		if (!line || !contains(line, "vertex"))
 		{
+			printf("parse_facet: Invalid vertex line: '%s'\n", line ? line : "NULL");
 			free(line);
 			return (-1);
 		}
+		printf("parse_facet: Parsing vertex %d: '%s'\n", vertex_idx, line);
 		if (parse_vertex_line(line, &vertices[vertex_idx]) != 0)
 		{
 			free(line);
@@ -178,14 +197,29 @@ t_mesh	*load_stl_ascii_file(const char *filename)
 	t_mesh *mesh;
 
 	// 1. Dosyayı aç
+	printf("ASCII loader: Opening file %s\n", filename);
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
+	{
+		printf("ASCII loader: Failed to open file\n");
 		return (NULL);
+	}
 
 	// 2. İlk satırı oku: "solid name"
+	printf("ASCII loader: Reading first line\n");
 	line = get_next_line(fd);
-	if (!line || !starts_with(line, "solid"))
+	if (!line)
 	{
+		printf("ASCII loader: get_next_line returned NULL\n");
+		close(fd);
+		return (NULL);
+	}
+	printf("ASCII loader: First line: '%s'\n", line);
+	printf("ASCII loader: starts_with result: %d\n", starts_with(line, "solid"));
+	printf("ASCII loader: ft_strncmp result: %d\n", ft_strncmp(line, "solid", 5));
+	if (!starts_with(line, "solid"))
+	{
+		printf("ASCII loader: Line doesn't start with 'solid'\n");
 		free(line);
 		close(fd);
 		return (NULL);
@@ -193,10 +227,13 @@ t_mesh	*load_stl_ascii_file(const char *filename)
 	free(line);
 
 	// 3. Ana döngü: facet'leri parse et
+	printf("ASCII loader: Starting main loop\n");
 	while ((line = get_next_line(fd)))
 	{
-		if (starts_with(line, "facet normal"))
+		printf("ASCII loader: Read line in loop: '%s'\n", line);
+		if (contains(line, "facet normal"))
 		{
+			printf("ASCII loader: Found facet normal, calling parse_facet\n");
 			if (parse_facet(fd, &loader) != 0)
 			{
 				cleanup_loader(&loader);

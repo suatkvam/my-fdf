@@ -3,6 +3,10 @@
         "libft.h": "c",
         "printf.h": "c",
         "cleaR_İMAGE.C": "cpp",
-        "render.h": "c"
+        "render.h": "c",
+        "unistd.h": "c",
+        "stdint.h": "c",
+        "random": "c",
+        "format.h": "c"
     }
 }

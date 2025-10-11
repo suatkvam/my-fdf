@@ -17,38 +17,34 @@ static const char	*ft_basename(const char *path)
 	return (last);
 }
 
-int	is_valid_file(const char *path)
+static int	has_extension(const char *path, const char *ext)
 {
 	const char *base;
-	const char *extension = MAP_EXTENSION;
 	size_t base_len;
 	size_t ext_len;
 
-	if (!path)
+	if (!path || !ext)
 		return (0);
-
 	base = ft_basename(path);
 	if (!base)
 		return (0);
-
 	base_len = ft_strlen(base);
-	ext_len = ft_strlen(extension);
-
-	// Kural 2: Dosya adı uzantıdan uzun olmalı mı?
+	ext_len = ft_strlen(ext);
 	if (base_len <= ext_len)
 		return (0);
-
-	// Kural 1: Dosya '.fdf' ile bitiyor mu?
-	// Dosya adının son 'ext_len' karakterini uzantı ile karşılaştır.
 	base += base_len - ext_len;
-	while (*base && *extension && *base == *extension)
+	while (*base && *ext && *base == *ext)
 	{
 		base++;
-		extension++;
+		ext++;
 	}
+	return (*ext == '\0');
+}
 
-	if (*extension == '\0')
-		return (1); // Eşleşme tamam.
-
-	return (0); // Eşleşme yok.
+int	is_valid_file(const char *path)
+{
+	if (!path)
+		return (0);
+	// Support both .fdf and .stl files
+	return (has_extension(path, MAP_EXTENSION) || has_extension(path, ".stl"));
 }
