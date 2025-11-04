@@ -51,7 +51,6 @@ CFLAGS += -g3
 CFLAGS += $(INCLUDE_FLAGS)
 
 RM = rm -f
-SILENT = @
 
 # rules
 
