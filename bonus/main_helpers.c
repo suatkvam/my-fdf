@@ -6,7 +6,7 @@
 /*   By: akivam <akivam@student.42istanbul.com.t    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 18:43:19 by akivam            #+#    #+#             */
-/*   Updated: 2025/10/18 17:56:51 by akivam           ###   ########.fr       */
+/*   Updated: 2026/03/23 13:46:30 by akivam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,12 @@
 t_map	*parse_map(const char *map_file)
 {
 	t_map	*map;
-	int		colored;
 	char	*map_name;
-	char	*display_name;
 
 	map_name = extract_map_name(map_file);
-	if (map_name)
-		display_name = map_name;
-	else
-		display_name = (char *)map_file;
 	map = map_parser(map_file);
 	if (!map)
 		return (parse_map_error(map_name));
-	colored = count_colored(map);
 	if (map_name)
 		free(map_name);
 	return (map);
